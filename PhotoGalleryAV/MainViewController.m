@@ -34,6 +34,9 @@
     UIImagePickerController *controller = [[UIImagePickerController alloc] init];
     // if you delve into the class, you can see the options for the sourceType.
     controller.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    // the sourceType for the camera is very similar to the photo library.
+    // UIImagePickerControllerCameraCaptureMode
+    
     // set up the delegate
     controller.delegate = self;
     
@@ -57,8 +60,29 @@
      Uh oh. Why does the album not dismiss itself now?
      Because we overrode the default delegate. */
     self.imageView.image = image;
+    // let's make the new photo do something interesting.
+    [self flip];
+    
+    // so now we have to dismiss it by hand
+    [self dismissViewControllerAnimated:YES completion:^{
+        // do something when it's finished dismissing
+    }];
 }
 
+- (void) flip{
+    [UIView animateWithDuration:2.0f animations:^{
+        self.imageView.transform = CGAffineTransformMakeScale(-1, 1);
+    }completion:^(BOOL finished) {
+        [self flipBack];
+    }];
+}
+- (void) flipBack{
+    [UIView animateWithDuration:2.0f animations:^{
+        self.imageView.transform = CGAffineTransformMakeScale(1, 1);
+    }completion:^(BOOL finished) {
+        [self flip];
+    }];
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
