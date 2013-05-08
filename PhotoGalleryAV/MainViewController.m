@@ -12,7 +12,8 @@
 
 @interface MainViewController ()
 // we need to declare this property as strong so it's not accidentally unloaded by ARC.
-@property (strong, nonatomic) MPMoviePlayerController *player;
+@property (strong, nonatomic) MPMoviePlayerController *videoPlayer;
+@property (strong, nonatomic) MPMoviePlayerController *audioPlayer;
 @end
 
 @implementation MainViewController
@@ -29,23 +30,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // url to video feed
-    NSURL *url = [NSURL URLWithString:@"http://ia600506.us.archive.org/3/items/folk.guitar/guitar1_512kb.mp4"];
-    // init the player
-    self.player = [[MPMoviePlayerController alloc] init];
-    // we want a streaming source
-    self.player.movieSourceType = MPMovieSourceTypeStreaming;
-    // pass the formatted url as the contentURL
-    self.player.contentURL = url;
-    // be kind. say NO to autoplay :)
-    self.player.shouldAutoplay = NO;
-    // create the movie player's size and position based on the containerView
-    self.player.view.frame = self.containerView.frame;
-    // add the player to the view controller's view
-    [self.view addSubview:self.player.view];
-    [self.player prepareToPlay];
-    // have some fun. Uncomment this line :)
-    // self.player.view.transform = CGAffineTransformMakeScale(1, -1);
+    [self setupVideo];
+    [self setupAudio];
 }
 
 
@@ -104,6 +90,52 @@
     }completion:^(BOOL finished) {
         [self flip];
     }];
+}
+
+- (void)setupVideo{
+    /* Remote streaming:
+     // url to video feed
+     NSURL *url = [NSURL URLWithString:@"http://ia600506.us.archive.org/3/items/folk.guitar/guitar1_512kb.mp4"];
+     */
+    
+    // Local:
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"video" ofType:@"mp4"];
+    // any raw resources that you want to get a handle on, fileURLWithPath is a very useful way to do that.
+    NSURL *url = [NSURL fileURLWithPath:path];
+    
+    // init the player
+    self.videoPlayer = [[MPMoviePlayerController alloc] init];
+    // we want a streaming source
+    self.videoPlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    // pass the formatted url as the contentURL
+    self.videoPlayer.contentURL = url;
+    // be kind. say NO to autoplay :)
+    self.videoPlayer.shouldAutoplay = NO;
+    // create the movie player's size and position based on the containerView
+    self.videoPlayer.view.frame = self.containerView.frame;
+    // add the player to the view controller's view
+    [self.view addSubview:self.videoPlayer.view];
+    [self.videoPlayer prepareToPlay];
+    // have some fun. Uncomment this line :)
+    // self.player.view.transform = CGAffineTransformMakeScale(1, -1);
+}
+
+- (void)setupAudio
+{
+    NSURL *url = [NSURL URLWithString:@"http://ia700303.us.archive.org/19/items/treasure_island_ap_librivox/treasure_island_01-02_stevenson.mp3"];
+    
+    self.audioPlayer = [[MPMoviePlayerController alloc] init];
+    self.audioPlayer.movieSourceType = MPMovieSourceTypeStreaming;
+    self.audioPlayer.contentURL = url;
+    self.audioPlayer.shouldAutoplay = NO;
+    // x = 40
+    // y = 340
+    // width = 240
+    // height = 380
+    self.audioPlayer.view.frame = CGRectMake(40, 380, 240, 30);
+    [self.view addSubview:self.audioPlayer.view];
+    [self.audioPlayer prepareToPlay];
+    self.audioPlayer.view.backgroundColor = [UIColor clearColor];
 }
 - (void)didReceiveMemoryWarning
 {
