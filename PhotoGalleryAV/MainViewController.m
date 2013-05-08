@@ -14,6 +14,7 @@
 // we need to declare this property as strong so it's not accidentally unloaded by ARC.
 @property (strong, nonatomic) MPMoviePlayerController *videoPlayer;
 @property (strong, nonatomic) MPMoviePlayerController *audioPlayer;
+@property (strong, nonatomic) MPMoviePlayerController *activePlayer;
 @end
 
 @implementation MainViewController
@@ -32,6 +33,8 @@
     [super viewDidLoad];
     [self setupVideo];
     [self setupAudio];
+    
+    self.activePlayer = self.audioPlayer;
 }
 
 
@@ -55,7 +58,18 @@
         // do nothing
     }];
 }
-
+- (IBAction)toggle:(id)sender{
+    if (self.activePlayer == self.audioPlayer)
+    {
+        self.activePlayer = self.videoPlayer;
+    }
+    else
+    {
+        self.activePlayer = self.audioPlayer;
+    }
+    [self.activePlayer prepareToPlay];
+    [self.activePlayer.view setHidden:NO];
+}
 // dig into the UIImagePickerControlDelegate protocol and you'll find...
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     // since this method makes a dictionary, and all we want is an image path,
@@ -122,7 +136,15 @@
 
 - (void)setupAudio
 {
+    // this setup is going to feel like deja vu.
+    /*
+    // here we are doing streaming audio:
     NSURL *url = [NSURL URLWithString:@"http://ia700303.us.archive.org/19/items/treasure_island_ap_librivox/treasure_island_01-02_stevenson.mp3"];
+     */
+    // Local:
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"treasure_island" ofType:@"mp3"];
+    // any raw resources that you want to get a handle on, fileURLWithPath is a very useful way to do that.
+    NSURL *url = [NSURL fileURLWithPath:path];
     
     self.audioPlayer = [[MPMoviePlayerController alloc] init];
     self.audioPlayer.movieSourceType = MPMovieSourceTypeStreaming;

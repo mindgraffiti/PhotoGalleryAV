@@ -12,4 +12,5 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 - (IBAction)selectPhoto:(id)sender;
+- (IBAction)toggle:(id)sender;
 @end
