@@ -7,9 +7,12 @@
 //
 
 #import "MainViewController.h"
+// import the MediaPlayer framework
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface MainViewController ()
-
+// we need to declare this property as strong so it's not accidentally unloaded by ARC.
+@property (strong, nonatomic) MPMoviePlayerController *player;
 @end
 
 @implementation MainViewController
@@ -26,8 +29,24 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
+    // url to video feed
+    NSURL *url = [NSURL URLWithString:@"http://ia600506.us.archive.org/3/items/folk.guitar/guitar1_512kb.mp4"];
+    // init the player
+    self.player = [[MPMoviePlayerController alloc] init];
+    // we want a streaming source
+    self.player.movieSourceType = MPMovieSourceTypeStreaming;
+    // pass the formatted url as the contentURL
+    self.player.contentURL = url;
+    // be kind. say NO to autoplay :)
+    self.player.shouldAutoplay = NO;
+    // create the movie player's size and position based on the containerView
+    self.player.view.frame = self.containerView.frame;
+    // add the player to the view controller's view
+    [self.view addSubview:self.player.view];
+    [self.player prepareToPlay];
 }
+
+
 
 - (IBAction)selectPhoto:(id)sender{
     // let's use the built in class to select images
@@ -73,7 +92,7 @@
     [UIView animateWithDuration:2.0f animations:^{
         self.imageView.transform = CGAffineTransformMakeScale(-1, 1);
     }completion:^(BOOL finished) {
-        [self flipBack];
+       // [self flipBack];
     }];
 }
 - (void) flipBack{

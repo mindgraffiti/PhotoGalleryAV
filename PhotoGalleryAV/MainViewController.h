@@ -10,5 +10,6 @@
 
 @interface MainViewController : UIViewController <UINavigationControllerDelegate,UIImagePickerControllerDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIView *containerView;
 - (IBAction)selectPhoto:(id)sender;
 @end
