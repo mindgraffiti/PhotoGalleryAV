@@ -44,6 +44,8 @@
     // add the player to the view controller's view
     [self.view addSubview:self.player.view];
     [self.player prepareToPlay];
+    // have some fun. Uncomment this line :)
+    // self.player.view.transform = CGAffineTransformMakeScale(1, -1);
 }
 
 
@@ -91,6 +93,7 @@
 - (void) flip{
     [UIView animateWithDuration:2.0f animations:^{
         self.imageView.transform = CGAffineTransformMakeScale(-1, 1);
+        
     }completion:^(BOOL finished) {
        // [self flipBack];
     }];
